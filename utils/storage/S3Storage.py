@@ -71,8 +71,9 @@ class S3Storage:
             dest = self.path
 
         upload_start = get_now()
+        print("SOURCE:: ", source,"\nDEST:: ",dest, "\nBUCKET:: ",self.bucket())
         result = self.bucket().upload_file(source, dest)
-        print(result)
+        print("RESULT:: ", result)
         upload_total = get_now() - upload_start
 
         return {"$time": upload_total}

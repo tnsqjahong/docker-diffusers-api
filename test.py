@@ -110,7 +110,6 @@ def runTest(name, banana, extraCallInputs, extraModelInputs):
     else:
         response = requests.post("http://localhost:8000/", json=inputs)
         result = response.json()
-
     finish = time.time() - start
     timings = result.get("$timings")
 
@@ -157,7 +156,7 @@ test(
     {
         "modelInputs": {"prompt": "realistic field of grass"},
         "callInputs": {
-            "MODEL_ID": "runwayml/stable-diffusion-v1-5",
+            "MODEL_ID": "stabilityai/stable-diffusion-2",
             "PIPELINE": "StableDiffusionPipeline",
             "SCHEDULER": "LMSDiscreteScheduler",
             # "xformers_memory_efficient_attention": False,
@@ -174,7 +173,7 @@ test(
             "num_images_per_prompt": 2,
         },
         "callInputs": {
-            "MODEL_ID": "runwayml/stable-diffusion-v1-5",
+            "MODEL_ID": "runwayml/stabilityai/stable-diffusion-2",
             "PIPELINE": "StableDiffusionPipeline",
             "SCHEDULER": "LMSDiscreteScheduler",
         },
@@ -190,7 +189,7 @@ test(
             "init_image": b64encode_file("sketch-mountains-input.jpg"),
         },
         "callInputs": {
-            "MODEL_ID": "runwayml/stable-diffusion-v1-5",
+            "MODEL_ID": "stabilityai/stable-diffusion-2",
             "PIPELINE": "StableDiffusionImg2ImgPipeline",
             "SCHEDULER": "LMSDiscreteScheduler",
         },
@@ -223,6 +222,22 @@ test(
         },
         "callInputs": {
             "MODEL_ID": "runwayml/stable-diffusion-inpainting",
+            "PIPELINE": "StableDiffusionInpaintPipeline",
+            "SCHEDULER": "DDIMScheduler",  # Note, as of diffusers 0.3.0, no LMS yet
+        },
+    },
+)
+
+test(
+    "custom",
+    {
+        "modelInputs": {
+            "prompt": "a cat sitting on a bench",
+            "image": b64encode_file("overture-creations-5sI6fQgYIuo.png"),
+            "mask_image": b64encode_file("overture-creations-5sI6fQgYIuo_mask.png"),
+        },
+        "callInputs": {
+            "MODEL_ID": "custom",
             "PIPELINE": "StableDiffusionInpaintPipeline",
             "SCHEDULER": "DDIMScheduler",  # Note, as of diffusers 0.3.0, no LMS yet
         },
@@ -270,7 +285,7 @@ if True or os.getenv("USE_DREAMBOOTH"):
                 # "push_to_hub": True,
             },
             "callInputs": {
-                "MODEL_ID": "runwayml/stable-diffusion-v1-5",
+                "MODEL_ID": "stabilityai/stable-diffusion-2",
                 "PIPELINE": "StableDiffusionPipeline",
                 "SCHEDULER": "DDPMScheduler",
                 "train": "dreambooth",

@@ -124,10 +124,10 @@ def TrainDreamBooth(model_id: str, pipeline, model_inputs, call_inputs):
         storage = Storage(dest_url)
         filename = storage.path if storage.path != "" else args.output_dir
         filename = filename.split("/").pop()
-        print(filename)
+        print("FILENAME:: ",filename)
         if not re.search(r"\.", filename):
             filename += ".tar.zstd"
-        print(filename)
+        print("FILENAME:: ",filename)
 
         # fp16 model timings: zip 1m20s, tar+zstd 4s and a tiny bit smaller!
         compress_start = get_now()
@@ -136,13 +136,13 @@ def TrainDreamBooth(model_id: str, pipeline, model_inputs, call_inputs):
         subprocess.run(
             f"tar cf - -C {args.output_dir} . | zstd -o {filename}",
             shell=True,
-            check=True,  # TODO, rather don't raise and return an error in JSON
+            # check=True,  # TODO, rather don't raise and return an error in JSON
         )
         subprocess.run(["ls", "-l", filename])
-
+        print("SUBPROCESS.RUN")
         compress_total = get_now() - compress_start
         result.get("$timings").update({"compress": compress_total})
-
+        print("UPLOAD START...")
         upload_result = storage.upload_file(filename, filename)
         print(upload_result)
         os.remove(filename)
@@ -487,6 +487,7 @@ def main(args, init_pipeline):
         size=args.resolution,
         center_crop=args.center_crop,
     )
+    print("TRAIN_DATASET:: ",train_dataset)
 
     def collate_fn(examples):
         input_ids = [example["instance_prompt_ids"] for example in examples]
